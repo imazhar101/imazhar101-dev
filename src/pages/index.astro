@@ -1,0 +1,891 @@
+---
+import { profile, links, projects, packages, featured, stack, credential, specs, stats, achievements, roadmap } from '../data/site.js';
+const stackRows = Object.entries(stack);
+const year = new Date().getFullYear();
+
+const site = 'https://imazhar101.dev';
+const pageTitle = `${profile.name} (@${profile.handle}) — ${profile.role}`;
+const desc = profile.blurb;
+const ogImage = `${site}/og.png`;
+const twitterHandle = '@imazhar101';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <meta name="author" content={profile.name} />
+    <meta
+      name="keywords"
+      content="Azhar, imazhar101, software engineer, engineering leader, MCP, Model Context Protocol, developer tooling, cloud, AI, agentic systems, OneOrigin"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={site} />
+    <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={`${profile.handle}.dev`} />
+    <meta property="og:url" content={site} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${profile.name} — ${profile.role}`} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={twitterHandle} />
+    <meta name="twitter:creator" content={twitterHandle} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={desc} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline>
+      // set theme before paint to avoid flash
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: profile.name,
+      alternateName: profile.handle,
+      url: site,
+      email: `mailto:${profile.email}`,
+      jobTitle: profile.role,
+      description: profile.blurb,
+      address: { '@type': 'PostalAddress', addressLocality: profile.location },
+      sameAs: [links.github, links.npm, links.x, links.linkedin, links.sharemydocs],
+    })} />
+  </head>
+  <body>
+    <div class="crt"></div>
+    <main class="term" aria-label="terminal">
+      <header class="bar">
+        <span class="dot red"></span><span class="dot yellow"></span
+        ><span class="dot green"></span>
+        <span class="titlebar">{profile.handle}@dev — zsh</span>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
+          <span class="ico-dark">◐</span><span class="ico-light">☀</span>
+        </button>
+      </header>
+
+      <div class="screen">
+       <div class="layout">
+        <div class="main">
+        <!-- whoami -->
+        <section class="block">
+          <p class="cmd"><span class="pr">$</span> whoami</p>
+          <div class="out">
+            <h1 class="name">{profile.name} <span class="muted">/ {profile.handle}</span></h1>
+            <p class="role">{profile.role}</p>
+            <p class="blurb">{profile.blurb}</p>
+            <p class="meta">
+              <span class="key">loc</span> {profile.location}
+              <span class="sep">·</span>
+              <span class="key">mail</span>
+              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+            </p>
+          </div>
+        </section>
+
+        <!-- links -->
+        <section class="block">
+          <p class="cmd"><span class="pr">$</span> cat links.txt</p>
+          <div class="out links">
+            <a href={links.github} target="_blank" rel="noopener">→ github.com/{profile.handle}</a>
+            <a href={links.sharemydocs} target="_blank" rel="noopener">→ sharemydocs.dev</a>
+            <a href={links.npm} target="_blank" rel="noopener">→ npmjs.com/~{profile.handle}</a>
+            <a href={links.x} target="_blank" rel="noopener">→ x.com/{profile.handle}</a>
+          </div>
+        </section>
+
+        <!-- stack -->
+        <section class="block">
+          <p class="cmd"><span class="pr">$</span> cat stack.txt</p>
+          <div class="out stack">
+            {
+              stackRows.map(([label, items]) => (
+                <p class="stack-row">
+                  <span class="key">{label.padEnd(10, ' ')}</span>
+                  {items.map((it) => <span class="chip">{it}</span>)}
+                </p>
+              ))
+            }
+          </div>
+        </section>
+
+        <!-- contact card -->
+        <section class="block">
+          <p class="cmd"><span class="pr">$</span> ./contact --card</p>
+          <div class="out">
+            <div class="contact">
+              <div class="avatar">{profile.handle.slice(0, 2).toUpperCase()}</div>
+              <div class="contact-body">
+                <p class="contact-name">{profile.name} <span class="muted">@{profile.handle}</span></p>
+                <p class="contact-role">{profile.role}</p>
+                <div class="contact-links">
+                  <a href={links.linkedin} target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+                    LinkedIn
+                  </a>
+                  <a href={`mailto:${profile.email}`}>
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 12.713 0 4.5V19a1.5 1.5 0 0 0 1.5 1.5h21A1.5 1.5 0 0 0 24 19V4.5l-12 8.213zM12 10.5 23.4 3H.6L12 10.5z"/></svg>
+                    Email
+                  </a>
+                  <a href={links.github} target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.8 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5z"/></svg>
+                    GitHub
+                  </a>
+                  <a href={links.x} target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M18.9 1.9h3.68l-8.04 9.19L24 22.1h-7.4l-5.8-7.58-6.64 7.58H.48l8.6-9.83L0 1.9h7.6l5.24 6.93L18.9 1.9zm-1.29 18h2.04L6.48 3.99H4.29L17.61 19.9z"/></svg>
+                    X
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a class="cred" href={credential.url} target="_blank" rel="noopener">
+            <span class="cred-icon">◆</span>
+            <span class="cred-text">
+              <b>{credential.title}</b>
+              <span class="muted"> — {credential.issuer}</span>
+            </span>
+            <span class="cred-verify">verify ↗</span>
+          </a>
+        </section>
+
+        <!-- projects -->
+        <section class="block">
+          <p class="cmd"><span class="pr">$</span> ls -la ~/projects</p>
+          <div class="out grid">
+            {
+              projects.map((p) => (
+                <a class="card" href={p.url} target="_blank" rel="noopener">
+                  <span class={`badge ${p.tag}`}>{p.tag}</span>
+                  <span class="card-name">{p.name}</span>
+                  <span class="card-desc">{p.desc}</span>
+                  <span class="card-outcome">{p.outcome}</span>
+                </a>
+              ))
+            }
+          </div>
+        </section>
+
+        <!-- featured packages -->
+        <section class="block">
+          <p class="cmd">
+            <span class="pr">$</span> npm ls --global @{profile.handle} --depth=0
+          </p>
+          <div class="out grid">
+            {
+              featured.map((pkg) => (
+                <a
+                  class="card pkg-card"
+                  href={`https://www.npmjs.com/package/${pkg.name}`}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <span class="pkg-head">
+                    <span class="card-name">{pkg.short}</span>
+                    <span class="pkg-v">v{pkg.v}</span>
+                  </span>
+                  <span class="card-outcome">{pkg.outcome}</span>
+                </a>
+              ))
+            }
+          </div>
+          <p class="viewall">
+            <a href={links.npm} target="_blank" rel="noopener"
+              >→ view all {packages.length} packages on npm</a
+            >
+          </p>
+        </section>
+
+        <!-- prompt -->
+        <section class="block">
+          <p class="cmd"><span class="pr">$</span> <span class="cursor">▊</span></p>
+        </section>
+        </div>
+
+        <aside class="midcol">
+          <div class="panel road-panel">
+            <p class="panel-title"><span class="pr">$</span> cat roadmap.md</p>
+            <p class="panel-sub">what I'm building next</p>
+            <div class="road-list">
+              {
+                roadmap.map((r) => (
+                  <div class="road-item">
+                    <span class={`road-status ${r.status}`}>{r.status}</span>
+                    <span class="road-text">{r.text}</span>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </aside>
+
+        <aside class="side">
+          <!-- neofetch id card -->
+          <div class="panel">
+            <p class="panel-title"><span class="pr">$</span> neofetch</p>
+            <div class="neo">
+              <pre class="neo-logo">{`   /\\_/\\
+  ( o.o )
+   > ^ <`}</pre>
+              <p class="neo-user"><b>{profile.handle}</b>@<span class="cyan">dev</span></p>
+              <p class="neo-rule">─────────────</p>
+              {
+                specs.map(([k, v]) => (
+                  <p class="neo-row"><span class="neo-k">{k}</span><span class="neo-v">{v}</span></p>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- stats -->
+          <div class="panel">
+            <p class="panel-title"><span class="pr">$</span> stats</p>
+            <div class="stat-grid">
+              {
+                stats.map(([label, val]) => (
+                  <div class="stat">
+                    <span class="stat-val">{val}</span>
+                    <span class="stat-label">{label}</span>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- achievements -->
+          <div class="panel">
+            <p class="panel-title"><span class="pr">$</span> gh achievements</p>
+            <div class="ach">
+              {
+                achievements.map((a) => (
+                  <span class="ach-item">
+                    <span class="ach-ico">{a.icon}</span> {a.label}
+                    {a.x > 1 && <span class="ach-x">×{a.x}</span>}
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+        </aside>
+       </div>
+      </div>
+    </main>
+
+    <footer class="foot">
+      <span>© {year} {profile.handle}</span>
+      <span class="sep">·</span>
+      <span>built with Astro · deployed on Cloudflare</span>
+    </footer>
+
+    <script is:inline>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        var root = document.documentElement;
+        function current() {
+          var set = root.getAttribute('data-theme');
+          if (set) return set;
+          return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        btn.addEventListener('click', function () {
+          var next = current() === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          try { localStorage.setItem('theme', next); } catch (e) {}
+        });
+      })();
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #0a0e14;
+    --bg2: #10151f;
+    --panel: #0d1117;
+    --panel2: #010409;
+    --fg: #c9d1d9;
+    --fg-strong: #ffffff;
+    --muted: #6e7681;
+    --green: #3fb950;
+    --cyan: #56d4dd;
+    --yellow: #e3b341;
+    --red: #f85149;
+    --accent: #58a6ff;
+    --line: #1f2630;
+    --shadow: rgba(0, 0, 0, 0.5);
+    --scan: rgba(255, 255, 255, 0.015);
+    --font: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  /* light: explicit toggle wins */
+  :root[data-theme='light'] {
+    --bg: #eef1f5;
+    --bg2: #ffffff;
+    --panel: #ffffff;
+    --panel2: #f4f6f9;
+    --fg: #24292f;
+    --fg-strong: #0a0e14;
+    --muted: #57606a;
+    --green: #1a7f37;
+    --cyan: #0a7ea4;
+    --yellow: #9a6700;
+    --red: #cf222e;
+    --accent: #0969da;
+    --line: #d0d7de;
+    --shadow: rgba(140, 149, 159, 0.25);
+    --scan: rgba(0, 0, 0, 0.012);
+  }
+
+  /* light: system preference, unless user forced dark */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']) {
+      --bg: #eef1f5;
+      --bg2: #ffffff;
+      --panel: #ffffff;
+      --panel2: #f4f6f9;
+      --fg: #24292f;
+      --fg-strong: #0a0e14;
+      --muted: #57606a;
+      --green: #1a7f37;
+      --cyan: #0a7ea4;
+      --yellow: #9a6700;
+      --red: #cf222e;
+      --accent: #0969da;
+      --line: #d0d7de;
+      --shadow: rgba(140, 149, 159, 0.25);
+      --scan: rgba(0, 0, 0, 0.012);
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: radial-gradient(ellipse at top, var(--bg2) 0%, var(--bg) 70%);
+    color: var(--fg);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.65;
+    min-height: 100vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* subtle scanline overlay */
+  .crt {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--scan) 0px,
+      var(--scan) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    z-index: 100;
+  }
+
+  .term {
+    width: 100%;
+    flex: 1;
+    background: var(--panel);
+    border: none;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--panel2);
+    border-bottom: 1px solid var(--line);
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+  .titlebar {
+    margin-left: 10px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .theme-toggle {
+    margin-left: auto;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1;
+    font-family: var(--font);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .theme-toggle:hover {
+    color: var(--yellow);
+    border-color: var(--yellow);
+  }
+  .ico-light { display: none; }
+  :root[data-theme='light'] .ico-dark { display: none; }
+  :root[data-theme='light'] .ico-light { display: inline; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']) .ico-dark { display: none; }
+    :root:not([data-theme='dark']) .ico-light { display: inline; }
+  }
+
+  .screen {
+    padding: clamp(16px, 3vw, 40px) clamp(16px, 4vw, 64px);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 300px) 300px;
+    gap: clamp(24px, 3vw, 44px);
+    align-items: start;
+  }
+  @media (max-width: 1200px) {
+    .layout { grid-template-columns: minmax(0, 1fr) 300px; }
+    .midcol { grid-column: 1 / -1; }
+    .road-list { flex-direction: row !important; flex-wrap: wrap; }
+    .road-list .road-item { flex: 1 1 280px; }
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .midcol { grid-column: auto; }
+  }
+
+  .block {
+    margin-bottom: 26px;
+  }
+
+  /* right sidebar */
+  .side {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: sticky;
+    top: 24px;
+  }
+  @media (max-width: 900px) {
+    .side { position: static; }
+  }
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel2);
+    padding: 14px 16px;
+  }
+  .panel-title {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .cyan { color: var(--cyan); }
+
+  .neo-logo {
+    color: var(--green);
+    font-size: 12px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .neo-user {
+    font-size: 13px;
+    color: var(--fg-strong);
+  }
+  .neo-user b { color: var(--green); }
+  .neo-rule {
+    color: var(--line);
+    font-size: 12px;
+    margin: 2px 0 6px;
+    filter: brightness(2.2);
+  }
+  .neo-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12.5px;
+    padding: 1px 0;
+  }
+  .neo-k { color: var(--yellow); }
+  .neo-v { color: var(--fg); text-align: right; }
+
+  .stat-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .stat-val {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 18px;
+    min-width: 42px;
+  }
+  .stat-label {
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+
+  .ach {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ach-item {
+    font-size: 12.5px;
+    color: var(--fg);
+  }
+  .ach-ico { margin-right: 4px; }
+  .ach-x {
+    color: var(--green);
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  .midcol {
+    position: sticky;
+    top: 24px;
+  }
+  @media (max-width: 900px) {
+    .midcol { position: static; }
+  }
+  .panel-sub {
+    color: var(--muted);
+    font-size: 11.5px;
+    margin: -6px 0 12px;
+  }
+  .road-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .road-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 11px 12px;
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--accent);
+    border-radius: 8px;
+    background: var(--panel);
+  }
+  .road-status {
+    flex: none;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 1px;
+  }
+  .road-status.building { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+  .road-status.exploring { background: rgba(88, 166, 255, 0.15); color: var(--accent); }
+  .road-status.idea { background: rgba(227, 179, 65, 0.15); color: var(--yellow); }
+  .road-text {
+    color: var(--fg);
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+
+  .cmd {
+    color: var(--fg);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .pr {
+    color: var(--green);
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  .muted { color: var(--muted); }
+  .out {
+    margin-top: 6px;
+    padding-left: 4px;
+  }
+
+  .name {
+    font-size: clamp(20px, 5vw, 30px);
+    font-weight: 700;
+    color: var(--fg-strong);
+    letter-spacing: -0.5px;
+  }
+  .name .muted { font-weight: 400; }
+  .role {
+    color: var(--cyan);
+    margin-top: 2px;
+  }
+  .blurb {
+    color: var(--fg);
+    max-width: 78ch;
+    margin-top: 10px;
+  }
+  .meta {
+    margin-top: 12px;
+    color: var(--muted);
+  }
+  .meta .key {
+    color: var(--yellow);
+    margin-right: 4px;
+  }
+  .meta .sep { margin: 0 10px; }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .links a { width: fit-content; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel2);
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    width: fit-content;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .badge.live { background: rgba(63, 185, 80, 0.15); color: var(--green); }
+  .badge.wip { background: rgba(227, 179, 65, 0.15); color: var(--yellow); }
+  .card-name {
+    color: var(--fg-strong);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .card-desc {
+    color: var(--cyan);
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .card-outcome {
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.55;
+    margin-top: 2px;
+  }
+  .pkg-card .card-name {
+    font-size: 14px;
+    color: var(--accent);
+  }
+  .pkg-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .pkg-head .pkg-v {
+    color: var(--green);
+    font-size: 12px;
+    flex: none;
+  }
+  .viewall {
+    margin-top: 12px;
+    padding-left: 4px;
+  }
+  .viewall a {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .viewall a:hover { color: var(--accent); }
+
+  .stack-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .stack-row .key {
+    color: var(--yellow);
+    white-space: pre;
+    margin-right: 4px;
+  }
+  .chip {
+    padding: 2px 9px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--fg);
+    background: var(--panel2);
+  }
+
+  .contact {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--panel2), var(--panel));
+    max-width: 480px;
+  }
+  .avatar {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: #010409;
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+  }
+  .contact-name {
+    color: var(--fg-strong);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .contact-role {
+    color: var(--cyan);
+    font-size: 12.5px;
+    margin-bottom: 8px;
+  }
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .contact-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--fg);
+    font-size: 12px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .contact-links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .cred {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(227, 179, 65, 0.06), var(--panel2));
+    max-width: 480px;
+    font-size: 12.5px;
+    color: var(--fg);
+    transition: border-color 0.15s;
+  }
+  .cred:hover {
+    border-color: var(--yellow);
+    text-decoration: none;
+  }
+  .cred-icon { color: var(--yellow); }
+  .cred-text { flex: 1; }
+  .cred-text b { color: var(--fg-strong); font-weight: 700; }
+  .cred-verify {
+    color: var(--yellow);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .cursor {
+    color: var(--green);
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  .foot {
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    padding: 16px;
+  }
+  .foot .sep { margin: 0 8px; }
+
+  @media (max-width: 480px) {
+    body { font-size: 13px; }
+    .meta .sep { display: block; height: 0; margin: 4px 0; }
+  }
+</style>
