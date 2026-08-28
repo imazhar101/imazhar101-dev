@@ -6,9 +6,14 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name=imazhar101-dev",
+    "deploy:preview": "npm run build && wrangler pages deploy dist --project-name=imazhar101-dev --branch=preview"
   },
   "dependencies": {
     "astro": "^5.13.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
   }
 }
