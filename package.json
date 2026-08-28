@@ -15,5 +15,11 @@
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
+  },
+  "packageManager": "pnpm@10.33.2",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "workerd"
+    ]
   }
 }
