@@ -1,0 +1,71 @@
+---
+import Base from '../../layouts/Base.astro';
+import { profile } from '../../data/site.js';
+import { posts, permalink, parts } from '../../lib/posts.js';
+
+const all = await posts();
+const pageTitle = `Notes — ${profile.name} (@${profile.handle})`;
+const desc = `Short write-ups on developer tooling, MCP servers, cloud platforms and agentic AI systems by ${profile.name}.`;
+
+// group by year so the archive keeps its shape as it grows
+const byYear = [];
+for (const post of all) {
+  const { year } = parts(post.data.date);
+  const bucket = byYear.find((b) => b.year === year);
+  if (bucket) bucket.items.push(post);
+  else byYear.push({ year, items: [post] });
+}
+
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+const shortDate = (date) => `${MONTHS[date.getUTCMonth()]} ${String(date.getUTCDate()).padStart(2, '0')}`;
+---
+
+<Base title={pageTitle} desc={desc} path="/blog/">
+  <main class="grid">
+    <div>
+      <span class="stamp">the notebook</span>
+      <h1>Notes</h1>
+      <svg class="rule-hand" viewBox="0 0 230 9" fill="none" aria-hidden="true"
+        ><path
+          d="M2 6.2c38-3.6 76-4.4 114-2.6 34 1.6 68 2.2 112-1"
+          stroke="var(--orange)"
+          stroke-width="2.4"
+          stroke-linecap="round"
+        ></path></svg
+      >
+      <p class="lede">{desc}</p>
+
+      {all.length === 0 && <p class="note" style="margin-top:28px">Nothing published yet.</p>}
+
+      {
+        byYear.map((bucket) => (
+          <section>
+            <div class="year-rule">
+              <span>{bucket.year}</span>
+              <i />
+            </div>
+            <div class="post-list">
+              {bucket.items.map((post) => (
+                <a class="post-row" href={permalink(post)}>
+                  <span class="post-date">{shortDate(post.data.date)}</span>
+                  <span>
+                    <span class="post-row-title">{post.data.title}</span>
+                    <span class="post-row-desc">{post.data.desc}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+
+    <aside class="margin">
+      <div class="aside-note"><span class="arrow">↙</span>written as I build, not after</div>
+      <ul class="arrow-list" style="margin-top:24px">
+        <li><a href="/rss.xml">subscribe by rss</a></li>
+        <li><a href="/">back home</a></li>
+      </ul>
+    </aside>
+  </main>
+</Base>

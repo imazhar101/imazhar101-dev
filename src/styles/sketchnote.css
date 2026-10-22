@@ -753,3 +753,24 @@ a.card:hover {
   body { font-size: 16px; }
   .stack-row .key { width: 100%; }
 }
+
+/* ---------- syntax highlighting ---------- */
+
+/* Shiki paints its own background; keep the paper one and take only the colors. */
+.prose pre.astro-code {
+  background: var(--paper-2) !important;
+}
+.prose pre.astro-code,
+.prose pre.astro-code span {
+  color: var(--shiki-light);
+}
+:root[data-theme='dark'] .prose pre.astro-code,
+:root[data-theme='dark'] .prose pre.astro-code span {
+  color: var(--shiki-dark);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .prose pre.astro-code,
+  :root:not([data-theme='light']) .prose pre.astro-code span {
+    color: var(--shiki-dark);
+  }
+}
