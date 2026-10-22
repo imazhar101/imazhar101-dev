@@ -8,6 +8,7 @@ const url = `${site}${path}`;
 const ogImage = `${site}/og.png`;
 const twitterHandle = '@imazhar101';
 const year = new Date().getFullYear();
+const onBlog = path.startsWith('/blog') || /^\/\d{4}\//.test(path);
 ---
 
 <!doctype html>
@@ -31,6 +32,7 @@ const year = new Date().getFullYear();
     <!-- .ico fallback: Safari and most link-preview/RSS bots still request /favicon.ico -->
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title={`${profile.handle}.dev`} href="/rss.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -75,9 +77,11 @@ const year = new Date().getFullYear();
     <div class="sheet">
       <nav class="top">
         <a class="mark" href="/">azhar.</a>
+        <a class="l" href="/blog/" aria-current={onBlog ? 'page' : undefined}>posts</a>
         <a class="l" href="/#projects">projects</a>
         <a class="l" href="/#packages">packages</a>
         <span class="sp"></span>
+        <a class="l" href="/rss.xml">rss</a>
         <a class="l" href={links.github} target="_blank" rel="noopener">github</a>
         <a class="l" href={links.x} target="_blank" rel="noopener">x</a>
         <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
@@ -91,6 +95,8 @@ const year = new Date().getFullYear();
         <span>© {year} {profile.name.toLowerCase()}</span>
         <span>·</span>
         <span>{profile.handle}.dev</span>
+        <span>·</span>
+        <a href="/rss.xml">rss</a>
         <span>·</span>
         <span>built with Astro, served by Cloudflare</span>
       </footer>
