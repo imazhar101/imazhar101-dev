@@ -1,0 +1,116 @@
+---
+import '../styles/sketchnote.css';
+import { profile, links } from '../data/site.js';
+
+const site = 'https://imazhar101.dev';
+const { title, desc, path = Astro.url.pathname, ogType = 'website', published, robots = 'index, follow' } = Astro.props;
+const url = `${site}${path}`;
+const ogImage = `${site}/og.png`;
+const twitterHandle = '@imazhar101';
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={desc} />
+    <meta name="author" content={profile.name} />
+    <meta
+      name="keywords"
+      content="Azhar, imazhar101, software engineer, engineering leader, MCP, Model Context Protocol, developer tooling, cloud, AI, agentic systems, OneOrigin"
+    />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={url} />
+    <meta name="theme-color" content="#f7f4ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1c1b19" media="(prefers-color-scheme: dark)" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- .ico fallback: Safari and most link-preview/RSS bots still request /favicon.ico -->
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={`${profile.handle}.dev`} />
+    <meta property="og:url" content={url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${profile.name} — ${profile.role}`} />
+    <meta property="og:locale" content="en_US" />
+    {published && <meta property="article:published_time" content={published} />}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={twitterHandle} />
+    <meta name="twitter:creator" content={twitterHandle} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={desc} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline>
+      // set theme before paint to avoid flash
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+
+    <slot name="head" />
+  </head>
+  <body>
+    <div class="sheet">
+      <nav class="top">
+        <a class="mark" href="/">azhar.</a>
+        <a class="l" href="/#projects">projects</a>
+        <a class="l" href="/#packages">packages</a>
+        <span class="sp"></span>
+        <a class="l" href={links.github} target="_blank" rel="noopener">github</a>
+        <a class="l" href={links.x} target="_blank" rel="noopener">x</a>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
+          <span class="ico-dark">☾</span><span class="ico-light">☀</span>
+        </button>
+      </nav>
+
+      <slot />
+
+      <footer class="foot">
+        <span>© {year} {profile.name.toLowerCase()}</span>
+        <span>·</span>
+        <span>{profile.handle}.dev</span>
+        <span>·</span>
+        <span>built with Astro, served by Cloudflare</span>
+      </footer>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        var root = document.documentElement;
+        function current() {
+          var set = root.getAttribute('data-theme');
+          if (set) return set;
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        btn.addEventListener('click', function () {
+          var next = current() === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          try { localStorage.setItem('theme', next); } catch (e) {}
+        });
+      })();
+    </script>
+  </body>
+</html>
