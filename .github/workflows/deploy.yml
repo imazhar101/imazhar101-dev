@@ -19,16 +19,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The repo is on pnpm (packageManager in package.json, pnpm-lock.yaml),
+      # so install with pnpm — setup-node's npm cache finds no lockfile here.
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
-      - run: npm ci --no-audit --no-fund
+      - run: pnpm install --frozen-lockfile
 
-      - run: npm run build
+      - run: pnpm build
 
-      # Same call as `npm run deploy` locally, minus the build (done above).
+      # Same call as `pnpm deploy` locally, minus the build (done above).
       # Needs two repo secrets:
       #   CLOUDFLARE_API_TOKEN  — token with the "Cloudflare Pages: Edit" permission
       #   CLOUDFLARE_ACCOUNT_ID — account id from the Cloudflare dashboard URL
