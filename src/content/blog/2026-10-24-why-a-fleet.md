@@ -3,7 +3,7 @@ title: 'Why one engineer ends up building a fleet of agents'
 desc: 'I started with one assistant for everything. It worked until the context from every task started bleeding into every other one. This is the first post in a series on what I built instead, mistakes included.'
 date: 2026-10-24
 tags: ['agents', 'fleet']
-draft: true
+draft: false
 ---
 
 For a long time I had one assistant. One chat window, one pile of context, and every kind of task went into it. Debug a deploy, draft a post, check a bill, plan a trip. It worked until it didn't.
